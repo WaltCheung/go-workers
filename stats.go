@@ -50,7 +50,6 @@ func Stats(w http.ResponseWriter, req *http.Request) {
 	conn := Config.Pool.Get()
 	defer conn.Close()
 
-	conn.Send("multi")
 	conn.Send("get", Config.Namespace+"stat:processed")
 	conn.Send("get", Config.Namespace+"stat:failed")
 	conn.Send("zcard", Config.Namespace+RETRY_KEY)
@@ -59,7 +58,8 @@ func Stats(w http.ResponseWriter, req *http.Request) {
 		conn.Send("llen", fmt.Sprintf("%squeue:%s", Config.Namespace, key))
 	}
 
-	r, err := conn.Do("exec")
+	conn.Flush()
+	r, err := conn.Receive()
 
 	if err != nil {
 		Logger.Println("couldn't retrieve stats:", err)

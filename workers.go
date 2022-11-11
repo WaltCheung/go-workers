@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
+var (
 	RETRY_KEY           = "goretry"
 	SCHEDULED_JOBS_KEY  = "schedule"
 	INPROGRESS_JOBS_KEY = "inprogress"

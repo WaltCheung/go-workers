@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -34,6 +35,12 @@ func Configure(options map[string]interface{}) {
 	}
 	if options["namespace"] != nil {
 		namespace = options["namespace"].(string) + ":"
+		// add redis tag to support redis cluster
+		RETRY_KEY = fmt.Sprintf("%s:%s", namespace, RETRY_KEY)
+		SCHEDULED_JOBS_KEY = fmt.Sprintf("%s:%s", namespace, SCHEDULED_JOBS_KEY)
+		INPROGRESS_JOBS_KEY = fmt.Sprintf("%s:%s", namespace, INPROGRESS_JOBS_KEY)
+		ARGV_VALUE_KEY = fmt.Sprintf("%s:%s", namespace, ARGV_VALUE_KEY)
+		CANCEL_KEY = fmt.Sprintf("%s:%s", namespace, CANCEL_KEY)
 	}
 	if seconds, ok := options["poll_interval"].(int); ok {
 		pollInterval = seconds
