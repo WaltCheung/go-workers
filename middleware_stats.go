@@ -31,11 +31,11 @@ func incrementStats(logger *logrus.Entry, metric string) {
 
 	today := time.Now().UTC().Format("2006-01-02")
 
-	conn.Send("multi")
 	conn.Send("incr", Config.Namespace+"stat:"+metric)
 	conn.Send("incr", Config.Namespace+"stat:"+metric+":"+today)
 
-	if _, err := conn.Do("exec"); err != nil {
+	conn.Flush()
+	if _, err := conn.Receive(); err != nil {
 		logger.Println("couldn't save stats:", err)
 	}
 }
