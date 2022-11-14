@@ -34,7 +34,7 @@ func Configure(options map[string]interface{}) {
 		poolSize, _ = options["pool"].(int)
 	}
 	if options["namespace"] != nil {
-		namespace = options["namespace"].(string) + ":"
+		namespace = options["namespace"].(string)
 		// add redis tag to support redis cluster
 		RETRY_KEY = fmt.Sprintf("%s:%s", namespace, RETRY_KEY)
 		SCHEDULED_JOBS_KEY = fmt.Sprintf("%s:%s", namespace, SCHEDULED_JOBS_KEY)
