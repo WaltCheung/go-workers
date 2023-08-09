@@ -22,13 +22,13 @@ var popMessageScript = redis.NewScript(3, `
 // ARGV[2]: scheduled at.
 // ARGV[3]: job arguments.
 var enqueueAtScript = redis.NewScript(2, `
-	local exists = redis.call('HEXISTS', KEYS[2], ARGV[1])
-	if exists == 0 then
+	local exists = redis.call('ZRANK', KEYS[1], ARGV[1])
+	if exists then
+		return 0
+	else
 		redis.call('ZADD', KEYS[1], ARGV[2], ARGV[1])
 		redis.call('HSET', KEYS[2], ARGV[1], ARGV[3])
 		return 1
-	else
-		return 0
 	end
 `)
 
